@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Blog</title>
+    <%- include("./partials/head") %>
+
+</head>
+
+<body class="bg-secondary">
+
+    <%- include("./partials/nav") %>
+
+        <div class="container mt-3 ">
+            <form action="/blog" method="post" enctype="multipart/form-data">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInputDisabled" placeholder="Title" name="title">
+                    <label>Blog Title</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" style="height: 250px;" name="body" placeholder="Leave a comment here"
+                        id="floatingTextareaDisabled"></textarea>
+                    <label>Comments</label>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="inputGroupFile02" name="coverimage">
+                    <label class="input-group-text" for="inputGroupFile02">Cover Image</label>
+                  </div>
+
+                <input class="btn btn-primary" type="submit" value="Submit">
+            </form>
+
+        </div>
+        <%- include("./partials/script") %>
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home</title>
+    <%- include("./partials/head") %>
+</head>
+
+<body>
+    <%- include("./partials/nav") %>
+    <% if (locals.AllBlog) { %>
+     
+    <div class="container mt-3">
+        <div class="row">
+            <% AllBlog.forEach(data => { %>
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src="<%= data.CoverImageUrl %>" class="card-img-top" alt="Cover Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= data.Title %></h5>
+                            <a href="/blog/<%= data._id %>" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+    <%- include("./partials/script") %>
+</body>
+
+</html>
