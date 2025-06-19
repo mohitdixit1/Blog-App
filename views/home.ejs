@@ -2,32 +2,59 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>home</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blogify</title>
+    <link rel="icon" type="image/png"
+        href="https://media.licdn.com/dms/image/v2/D5603AQHCgvnGewxUxA/profile-displayphoto-shrink_400_400/B56Zch7E49G0Ak-/0/1748620825165?e=1755734400&v=beta&t=-P56pMvRfXbJYJuyld04kI85Vzzo_qrI2V-zDxjoC5I" />
+
     <%- include("./partials/head") %>
+    <style>
+        /* Subtle card hover effect */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 
 <body>
     <%- include("./partials/nav") %>
-    <% if (locals.AllBlog) { %>
-     
-    <div class="container mt-3">
-        <div class="row">
+
+    <% if (locals.AllBlog && AllBlog.length > 0) { %>
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">Latest Blogs</h1>
+        <div class="row g-4">
             <% AllBlog.forEach(data => { %>
-                <div class="col-md-4 mb-3">
-                    <div class="card" style="width: 18rem;">
-                        <img src="<%= data.CoverImageUrl %>" class="card-img-top" alt="Cover Image">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= data.Title %></h5>
-                            <a href="/blog/<%= data._id %>" class="btn btn-primary">Read More</a>
-                        </div>
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="<%= data.CoverImageUrl %>" class="card-img-top" alt="Cover Image" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><%= data.Title %></h5>
+                        <p class="card-text text-truncate"><%= data.Body ? data.Body.substring(0, 100) + '...' : '' %></p>
+                        <a href="/blog/<%= data._id %>" class="btn btn-primary mt-auto align-self-start">Read More</a>
                     </div>
                 </div>
+            </div>
             <% }) %>
         </div>
     </div>
+    <% } else { %>
+    <div class="container py-5">
+        <h3 class="text-center text-muted">No blogs found. Be the first to add one!</h3>
+    </div>
     <% } %>
+
     <%- include("./partials/script") %>
 </body>
 
