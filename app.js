@@ -9,9 +9,13 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ MongoDB connected!"))
-  .catch((err) => console.error("❌ Connection error:", err));
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("Connection error:", err));
+
 
 // Middleware for static files
 app.use(express.static(path.resolve("./public")));
@@ -61,6 +65,6 @@ app.get("/", async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 7000;
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`🚀 App is running at http://localhost:${PORT}`);
 });
