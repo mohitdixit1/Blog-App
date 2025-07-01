@@ -104,7 +104,7 @@ router.post("/forgotpassword", async (req, res) => {
   </p>
 
   <div style="text-align: center; margin: 30px 0;">
-    <a href="${req.protocol}://${req.headers.host}/user/resetpassword/${token}"
+    <a href="https://blog-app-7sx0.onrender.com/user/resetpassword/${token}"
        style="display: inline-block; background-color: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
       Reset Password
     </a>
