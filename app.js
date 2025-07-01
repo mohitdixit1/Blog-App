@@ -1,54 +1,66 @@
-
 require('dns').setDefaultResultOrder('ipv4first');
 require('dotenv').config();
+
 const express = require("express");
-const app = express();
-const path = require("path")
-app.use(express.static(path.resolve("./public")));
-
-
-const UserRoute = require("./routes/user");
-const BlogRoute = require("./routes/blog")
-const Blog = require("./models/blog")
-
-const cookieParser = require("cookie-parser")
-const {cheackForAuthCookie} = require("./middlewares/authentication")
+const path = require("path");
 const mongoose = require('mongoose');
+const cookieParser = require("cookie-parser");
 
+const app = express();
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => console.log("✅ MongoDB connected!"))
+  .catch((err) => console.error("❌ Connection error:", err));
 
-const PORT = process.env.PORT ||7000;
+// Middleware for static files
+app.use(express.static(path.resolve("./public")));
+app.use('/uploads', express.static('public/uploads')); // Serve uploaded profile images
 
-
-
-
-
-mongoose.connect( process.env.MONGO_URL)
-  .then(() => console.log("MongoDB connected!"))
-  .catch((err) => console.error("Connection error:", err));
-
-
-app.set("view engine" , "ejs")
-app.set("views",path.resolve("./views"))
+// Parse form data & JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+
+// Cookie parser for authentication
+app.use(cookieParser());
+
+// View engine setup
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
+
+// Authentication middleware
+const { cheackForAuthCookie } = require("./middlewares/authentication");
 app.use(cheackForAuthCookie("token"));
-app.use("/user",UserRoute);
-app.use("/blog",BlogRoute);
-app.use(express.static(path.resolve("./public")))
 
-app.get("/",async (req,res)=>{
-    const AllBlog = await Blog.find().sort({ createdAt: -1 });  // Newest first
-;
-    if(!req.cookies.token){return res.redirect("/user/signin")
-    }
-    res.render("home",{
-        user:req.user,
-        AllBlog:AllBlog,
-    })
+// Route imports
+const UserRoute = require("./routes/user");
+const BlogRoute = require("./routes/blog");
+const Blog = require("./models/blog");
 
-})
-app.listen(PORT,()=>{
-    console.log(`app is listening at port ${PORT}`)
-})
+// Route mounting
+app.use("/user", UserRoute);
+app.use("/blog", BlogRoute);
+
+// Home page
+app.get("/", async (req, res) => {
+  if (!req.cookies.token) {
+    return res.redirect("/user/signin");
+  }
+
+  try {
+    const AllBlog = await Blog.find().sort({ createdAt: -1 }); // Latest blogs first
+    return res.render("home", {
+      user: req.user,
+      AllBlog,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Something went wrong while loading the homepage.");
+  }
+});
+
+// Start server
+const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+  console.log(`🚀 App is running at http://localhost:${PORT}`);
+});
